@@ -43,7 +43,7 @@ while True:
     if name == "done":
         break
     id = int(input("Enter course id: "))
-    add_course(name, id)
+    add_courses(name, id)
 
 # Creat an empty list
 marks = []
