@@ -21,6 +21,7 @@ while True:
     add_student(name, id, DOB)
 
 # Print all student records
+print("listing students")
 print_students()
 
 # Create an empty list
@@ -45,5 +46,29 @@ while True:
     id = int(input("Enter course id: "))
     add_courses(name, id)
 
-# Creat an empty list
+#print all course records
+print("listing courses")
+print_courses()
+
+#create empty list
 marks = []
+
+#define function to input mark
+def input_mark(course, students):
+    print(f"Input mark for course {course['name']}")
+    course['mark'] = {}
+    for student in students:
+        mark = input(f"* Student {student['name']}: ")
+        course['mark'][student['id']] = mark
+
+for course in courses:
+    input_mark(course,students)
+
+#listing mark function
+def show_mark(course):
+    for (student_id, mark) in course['mark'].items():
+        print(f"Student {student_id} has mark {mark}")
+
+print("show mark:")
+for course in courses:
+    show_mark(course)
