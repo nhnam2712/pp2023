@@ -1,3 +1,6 @@
+#create import
+import math
+
 #create class for students and courses
 class Student:
     def __init__(self, name, id, dob):
@@ -53,8 +56,8 @@ class Course:
     def input_mark(self, students):
         print(f"Input mark for course {self.__name}")
         for student in students:
-            mark = input(f"* Student {student.__name}: ")
-            self.__mark[student.id] = mark
+            mark = float(input(f"* Student {student.__name}: "))
+            self.__mark[student._get_id_()] = math.floor(mark*10)/10  #round-down to 1 digit
 
     def show_mark(self):
         for student_id, mark in self.__mark.items():
