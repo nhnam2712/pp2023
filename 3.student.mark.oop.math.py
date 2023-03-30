@@ -1,89 +1,91 @@
+#import sections
 import math
 
-# Define a base class for both students and courses
-class Record:
-    def __init__(self, name, id):
-        self.name = name
-        self.id = id
+# Define a class for Student
+class Student:
+    def __init__(self, name, id, dob):
+        self._name = name
+        self._id = id
+        self._dob = dob
+        self._gpa = 0.0
 
-# Define a subclass for students that inherits from the base class
-class Student(Record):
-    def __init__(self, name, id, DOB):
-        super().__init__(name, id)
-        self.DOB = DOB
-        self.courses = {}
+    # Define getter methods for the name, id, and dob attributes
+    def get_name(self):
+        return self._name
 
-    def __str__(self):
-        return f"{self.name} ({self.id})"
+    def get_id(self):
+        return self._id
 
-    def add_course(self, course):
-        self.courses[course] = 0
+    def get_dob(self):
+        return self._dob
 
-    def add_grade(self, course, grade):
-        self.courses[course] = grade
+    def get_gpa(self):
+        return self._gpa
 
-#calculate the gpa but the scale is 10 points
-    def calculate_gpa(self):
+
+    # Define setter methods for the name, id, and dob attributes
+    def set_name(self, name):
+        self._name = name
+
+    def set_id(self, id):
+        self._id = id
+
+    def set_dob(self, dob):
+        self._dob = dob
+
+    def set_gpa(self, gpa):
+        self._gpa = gpa
+
+# Define a method to calculate the GPA based on the marks obtained in each course
+    def calculate_gpa(self, courses):
         total_credits = 0
-        total_grade_points = 0
-        for course, grade in self.courses.items():
-            credits = course.credit
-            if grade == "A":
-                grade_points = 4.0
-            elif grade == "A-":
-                grade_points = 3.7
-            elif grade == "B+":
-                grade_points = 3.3
-            elif grade == "B":
-                grade_points = 3.0
-            elif grade == "B-":
-                grade_points = 2.7
-            elif grade == "C+":
-                grade_points = 2.3
-            elif grade == "C":
-                grade_points = 2.0
-            elif grade == "C-":
-                grade_points = 1.7
-            elif grade == "D+":
-                grade_points = 1.3
-            elif grade == "D":
-                grade_points = 1.0
-            else:
-                grade_points = 0.0
-            total_credits += credits
-            total_grade_points += grade_points * credits
-        if total_credits == 0:
-            return 0
-        else:
-            return total_grade_points / total_credits
+        weighted_sum = 0
+        for course in courses:
+            if self._id in course.get_marks():
+                mark = course.get_marks()[self._id]
+                credit = course.get_credits()
+                total_credits += credit
+                weighted_sum += mark * credit
+        if total_credits > 0:
+            self._gpa = weighted_sum / total_credits
 
-# Define a subclass for courses that inherits from the base class
-class Course(Record):
+        return self._gpa
+
+# Define a class for Course
+class Course:
     def __init__(self, name, id):
-        super().__init__(name, id)
-        self.marks = {}
-        self.credit = {}
+        self._name = name
+        self._id = id
+        self._marks = {}
+        self._credits = 0
 
-    def __str__(self):
-        return f"{self.name} ({self.id})"
+    # Define getter methods for the name and id attributes
+    def get_name(self):
+        return self._name
 
-    # Defind a method to add a credit for a course
-    def add_credit(self, course, credit):
-        self.credit[course] = credit
+    def get_id(self):
+        return self._id
 
-    # Defind a method to print a credit for a course
-    def print_credit(self):
-        for course, credit in self.credit.items():
-            print(f"{course}: {credit} credits")
+    def get_marks(self):
+        return self._marks
 
-    # Define a method to add a mark for a student
-    def add_mark(self, student, mark):
-        self.marks[student] = math.floor(float(mark)*10)/10
+    def get_credits(self):
+        return self._credits
 
-    # Define a method to print all marks for the course
-    def print_marks(self):
-        for student, mark in self.marks.items():
-            print(f"{student}: {mark}")
+    # Define a method to input marks for a student
+    def input_mark(self, student, mark):
+        self._marks[student.get_id()] = float(mark)
+    # Define a method to show marks for all students in the course
+    def show_marks(self):
+        for student_id, mark in self._marks.items():
+            print(f"Student {student_id} has mark {mark} in {self._name}")
+
+    def input_credit(self, credit):
+        self._credits = credit
+
+    def show_credits(self):
+        print(f"Course {self._name} has {self._credits} credits")
+
 
 # Create empty lists for students and courses
 students = []
@@ -94,9 +96,9 @@ while True:
     name = input("Enter student name (or 'done' to exit): ")
     if name == "done":
         break
-    id = str(input("Enter student id: "))
-    DOB = str(input("Enter student dob: "))
-    student = Student(name, id, DOB)
+    id = int(input("Enter student id: "))
+    dob = input("Enter student dob: ")
+    student = Student(name, id, dob)
     students.append(student)
 
 # Allow the user to input course information
@@ -108,31 +110,48 @@ while True:
     course = Course(name, id)
     courses.append(course)
 
-#Allow the user to input credit for each student in each course
+# Allow the user to input credits for all courses
 for course in courses:
-    print(f"Input credit for course {course}:")
-    credit = input(f"Enter credit for {course}: ")
-    course.add_credit(course, credit)
+    print(f"Input credits for course {course.get_name()}")
+    credit =int(input(f"* Course {course.get_name()}: "))
+    course.input_credit(credit)
 
-# Allow the user to input marks for each student in each course
+# Allow the user to input marks for all students in all courses
 for course in courses:
-    print(f"Input marks for course {course}:")
+    print(f"Input marks for course {course.get_name()}")
     for student in students:
-        mark = input(f"Enter mark for {student}: ")
-        course.add_mark(student, mark)
+        mark = int(input(f"* Student {student.get_name()}: "))
+        course.input_mark(student, mark)
 
-# Calculate and print GPA for each student
+# Print all student records
+print("listing students")
 for student in students:
-    gpa = student.calculate_gpa()
-    print(f"{student}: GPA = {gpa:.2f}")
+    print(f"Name: {student.get_name()}, ID: {student.get_id()}, DOB: {student.get_dob()}")
 
-# Print all student and course information, along with marks
-print("Students:")
+# Calculate and show GPA for each student
 for student in students:
-    print(student)
+    gpa = student.calculate_gpa(courses)
+    print(f"{student.get_name()} has {gpa} gpa")
 
-print("Courses:")
+# Sort students by GPA in descending order
+sorted_students = sorted(students, key=lambda student: student.get_gpa(), reverse=True)
+
+# Print sorted student records
+print("Listing students (sorted by GPA)")
+for student in sorted_students:
+    print(student.get_name(), student.get_id(), student.get_dob(), student.get_gpa())
+
+# Print all course records
+print("listing courses")
 for course in courses:
-    print(course)
-    course.print_credit()
-    course.print_marks()
+    print(course.get_name(), course.get_id())
+
+# Show credits for all courses
+print("show credits")
+for course in courses:
+    course.show_credits()
+
+# Show marks for all students in all courses
+print("show marks")
+for course in courses:
+    course.show_marks()

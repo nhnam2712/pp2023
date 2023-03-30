@@ -1,35 +1,53 @@
-# Define a base class for both students and courses
-class Record:
+# Define a class for Student
+class Student:
+    def __init__(self, name, id, dob):
+        self._name = name
+        self._id = id
+        self._dob = dob
+
+    # Define getter methods for the name, id, and dob attributes
+    def get_name(self):
+        return self._name
+
+    def get_id(self):
+        return self._id
+
+    def get_dob(self):
+        return self._dob
+
+    # Define setter methods for the name, id, and dob attributes
+    def set_name(self, name):
+        self._name = name
+
+    def set_id(self, id):
+        self._id = id
+
+    def set_dob(self, dob):
+        self._dob = dob
+
+
+# Define a class for Course
+class Course:
     def __init__(self, name, id):
-        self.name = name
-        self.id = id
+        self._name = name
+        self._id = id
+        self._marks = {}
 
-# Define a subclass for students that inherits from the base class
-class Student(Record):
-    def __init__(self, name, id, DOB):
-        super().__init__(name, id)
-        self.DOB = DOB
+    # Define getter methods for the name and id attributes
+    def get_name(self):
+        return self._name
 
-    def __str__(self):
-        return f"{self.name} ({self.id})"
+    def get_id(self):
+        return self._id
 
-# Define a subclass for courses that inherits from the base class
-class Course(Record):
-    def __init__(self, name, id):
-        super().__init__(name, id)
-        self.marks = {}
+    # Define a method to input marks for a student
+    def input_mark(self, student, mark):
+        self._marks[student.get_id()] = mark
 
-    def __str__(self):
-        return f"{self.name} ({self.id})"
-
-    # Define a method to add a mark for a student
-    def add_mark(self, student, mark):
-        self.marks[student] = mark
-
-    # Define a method to print all marks for the course
-    def print_marks(self):
-        for student, mark in self.marks.items():
-            print(f"{student}: {mark}")
+    # Define a method to show marks for all students in the course
+    def show_marks(self):
+        for student_id, mark in self._marks.items():
+            print(f"Student {student_id} has mark {mark} in {self._name}")
 
 
 # Create empty lists for students and courses
@@ -42,8 +60,8 @@ while True:
     if name == "done":
         break
     id = int(input("Enter student id: "))
-    DOB = input("Enter student dob: ")
-    student = Student(name, id, DOB)
+    dob = input("Enter student dob: ")
+    student = Student(name, id, dob)
     students.append(student)
 
 # Allow the user to input course information
@@ -55,19 +73,24 @@ while True:
     course = Course(name, id)
     courses.append(course)
 
-# Allow the user to input marks for each student in each course
+# Allow the user to input marks for all students in all courses
 for course in courses:
-    print(f"Input marks for course {course}:")
+    print(f"Input marks for course {course.get_name()}")
     for student in students:
-        mark = input(f"Enter mark for {student}: ")
-        course.add_mark(student, mark)
+        mark = input(f"* Student {student.get_name()}: ")
+        course.input_mark(student, mark)
 
-# Print all student and course information, along with marks
-print("Students:")
+# Print all student records
+print("listing students")
 for student in students:
-    print(student)
+    print(student.get_name(), student.get_id(), student.get_dob())
 
-print("Courses:")
+# Print all course records
+print("listing courses")
 for course in courses:
-    print(course)
-    course.print_marks()
+    print(course.get_name(), course.get_id())
+
+# Show marks for all students in all courses
+print("show marks")
+for course in courses:
+    course.show_marks()
